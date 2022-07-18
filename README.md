@@ -1,1 +1,1 @@
-# implicit_geometric_representations
+# Implicit Geometric Regularization for Learning Shapes
