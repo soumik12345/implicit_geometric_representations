@@ -28,11 +28,13 @@ class PointCloud2D(ABC):
             np.random.rand(len(self.points)) < self.sample_percentage
         ]
 
-    def plot_points(self, transpose: bool = True) -> None:
+    def plot_points(self, save_file: str = None, transpose: bool = True) -> None:
         x, y = self.points.T if transpose else self.points
         plt.plot(x, y, ".")
         plt.axis("equal")
         plt.show()
+        if save_file is not None:
+            plt.savefig(save_file)
 
 
 class PointCloud2DFromFont(PointCloud2D):
@@ -116,4 +118,5 @@ class PointCloud2DBatman(PointCloud2D):
             X1 = np.append(X1, 3 * abs(y) + 0.75)
         X = np.append(X, X1)
         Y = np.append(Y, Y1)
-        self.points = np.stack([x, -y], -1).astype(np.float32)
+        self.points = np.stack([Y, X], -1).astype(np.float32)
+        print(self.points.shape)
