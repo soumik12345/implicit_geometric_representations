@@ -64,22 +64,16 @@ class SDFVisualizationCallback(callbacks.Callback):
             u, v = sdf_gradients.numpy().T
             plt.quiver(x, y, u, v, color="white")
         plt.title(f"Signed Distance Field at Epoch: {epoch}")
-        figure_ = plt.gcf()
-        plt.show()
         if self.save_file is not None:
-            plt.savefig(self.save_file)
+            fig_1 = plt.gcf()
+            fig_1.savefig(self.save_file)
         if wandb.run is not None:
-            plt.savefig(self.temp_file_path)
+            fig_1.savefig(self.temp_file_path)
             wandb.log(
-                {
-                    "Signed Distance Field on Data": Image.frombytes(
-                        "RGB",
-                        figure_.canvas.get_width_height(),
-                        figure_.canvas.tostring_rgb(),
-                    )
-                },
+                {"Signed Distance Field on Data": wandb.Image(self.temp_file_path)},
                 step=epoch,
             )
+        plt.show()
 
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:
