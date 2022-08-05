@@ -119,7 +119,7 @@ class SDFModelBase(keras.Model):
         plt.colorbar()
         plt.contour(x, y, sdf, levels=[0.0], colors="white")
         if inputs is not None:
-            _, sdf_gradients = self.val_and_grad(inputs)
+            _, sdf_gradients = self.compute_gradients(inputs)
             x, y = inputs.numpy().T
             u, v = sdf_gradients.numpy().T
             plt.quiver(x, y, u, v, color="white")

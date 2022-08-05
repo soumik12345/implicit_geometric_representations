@@ -16,4 +16,5 @@ font_point_cloud.plot_points(save_file="plot_points_font.png")
 
 model = SDFModelBase(num_points=data.shape[0])
 model.visualize(save_file="plot_initial_sdf.png", distance=2)
+model.visualize(save_file="plot_initial_sdf_points.png", inputs=data, distance=2)
 model.summary()
