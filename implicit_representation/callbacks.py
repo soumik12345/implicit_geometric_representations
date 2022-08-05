@@ -51,9 +51,9 @@ class SDFVisualizationCallback(callbacks.Callback):
         plt.contourf(x, y, sdf, 16)
         plt.colorbar()
         plt.contour(x, y, sdf, levels=[0.0], colors="white")
-        if inputs is not None:
-            _, sdf_gradients = self.compute_gradients(inputs)
-            x, y = inputs.numpy().T
+        if self.inputs is not None:
+            _, sdf_gradients = self.compute_gradients(self.inputs)
+            x, y = self.inputs.numpy().T
             u, v = sdf_gradients.numpy().T
             plt.quiver(x, y, u, v, color="white")
         plt.show()
