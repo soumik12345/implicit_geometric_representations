@@ -102,23 +102,3 @@ class SDFModelBase(keras.Model):
             "total_point_loss": total_point_loss,
             "eikonal_loss": eikonal_loss,
         }
-
-    def visualize(self, inputs=None, distance=2, save_file: str = None):
-        """Reference: https://github.com/znah/notebooks/blob/master/tutorials/implicit_sdf.ipynb"""
-        y, x = np.mgrid[-distance:distance:256j, -distance:distance:256j]
-        coords = np.stack([x, y], -1).astype(np.float32)
-        sdf = self(coords)[..., 0]
-        f = plt.figure(figsize=(10, 8))
-        plt.axis("equal")
-        plt.grid()
-        plt.contourf(x, y, sdf, 16)
-        plt.colorbar()
-        plt.contour(x, y, sdf, levels=[0.0], colors="white")
-        if inputs is not None:
-            _, sdf_gradients = self.compute_gradients(inputs)
-            x, y = inputs.numpy().T
-            u, v = sdf_gradients.numpy().T
-            plt.quiver(x, y, u, v, color="white")
-        plt.show()
-        if save_file is not None:
-            plt.savefig(save_file)
