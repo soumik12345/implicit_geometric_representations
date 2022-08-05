@@ -66,4 +66,4 @@ class SDFVisualizationCallback(callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:
-            self.visualize_sdf(epoch + epoch)
+            self.visualize_sdf(epoch + 1)
