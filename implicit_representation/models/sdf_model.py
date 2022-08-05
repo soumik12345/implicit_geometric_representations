@@ -3,9 +3,7 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers, initializers
-
-from .custom_layers import SoftPlus
+from tensorflow.keras import layers, initializers, activations
 
 
 class SDFModelBase(keras.Model):
@@ -14,8 +12,6 @@ class SDFModelBase(keras.Model):
         num_points: int,
         units: int = 80,
         num_intermediate_layers=2,
-        softplus_beta: float = 1.0,
-        softplus_threshold: float = 20.0,
         point_loss_coeff: float = 100.0,
         num_padding_points: int = 500,
         *args,
@@ -28,7 +24,7 @@ class SDFModelBase(keras.Model):
         self.point_loss_coeff = point_loss_coeff
         self.num_padding_points = num_padding_points
         self.num_dimensions = 2
-        self.activation = SoftPlus(beta=softplus_beta, threshold=softplus_threshold)
+        self.activation = activations.softplus
         self._build_layers()
 
     def _build_layers(self):
