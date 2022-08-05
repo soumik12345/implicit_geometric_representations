@@ -109,6 +109,8 @@ class SDFModelBase(keras.Model):
 
 
 class SDFModelResidual(SDFModelBase):
+    """Reference: https://github.com/peisuke/ImplicitGeometricRegularization.pytorch/blob/master/network.py"""
+
     def __init__(
         self,
         num_points: int,
