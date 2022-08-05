@@ -11,6 +11,9 @@ class ProgressBarCallback(callbacks.Callback):
     def __init__(self, epochs: int, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.epochs = epochs
+        self.p_bar = None
+    
+    def on_train_begin(self):
         self.p_bar = tqdm(total=self.epochs)
 
     def on_epoch_end(self, epoch, logs=None):
