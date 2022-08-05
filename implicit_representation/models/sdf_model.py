@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Callable
 
 import tensorflow as tf
 from tensorflow import keras
@@ -12,6 +13,7 @@ class SDFModelBase(keras.Model):
         num_points: int,
         units: int = 80,
         num_intermediate_layers=2,
+        activation: Callable = activations.softplus,
         point_loss_coeff: float = 100.0,
         num_padding_points: int = 500,
         *args,
@@ -24,7 +26,7 @@ class SDFModelBase(keras.Model):
         self.point_loss_coeff = point_loss_coeff
         self.num_padding_points = num_padding_points
         self.num_dimensions = 2
-        self.activation = activations.softplus
+        self.activation = activation
         self._build_layers()
 
     def _build_layers(self):
