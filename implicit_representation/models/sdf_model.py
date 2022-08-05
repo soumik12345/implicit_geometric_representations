@@ -1,5 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
 from typing import Callable
 
 import tensorflow as tf
