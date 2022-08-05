@@ -69,10 +69,11 @@ class SDFVisualizationCallback(callbacks.Callback):
             plt.savefig(self.save_file)
         if wandb.run is not None:
             plt.savefig(self.temp_file_path)
-            wandb.log(
-                {"Signed Distance Field on Data": wandb.Image(self.temp_file_path)},
-                step=epoch,
-            )
+            wandb.plot({"Signed Distance Field on Data": figure}, step=epoch)
+            # wandb.log(
+            #     {"Signed Distance Field on Data": wandb.Image(self.temp_file_path)},
+            #     step=epoch,
+            # )
             # wandb.log(
             #     {
             #         "Signed Distance Field on Data": Image.frombytes(
@@ -87,6 +88,3 @@ class SDFVisualizationCallback(callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:
             self.visualize_sdf(epoch + 1)
-
-    def on_train_end(self, logs=None):
-        os.remove(self.temp_file_path)
