@@ -62,7 +62,6 @@ class SDFModelBase(keras.Model):
 
     def pad_inputs(self, inputs):
         inputs = inputs[0]
-        num_points = tf.shape(inputs)[0]
         padded_points = tf.concat(
             [
                 inputs,
