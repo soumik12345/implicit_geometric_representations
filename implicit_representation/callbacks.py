@@ -1,5 +1,6 @@
 import wandb
 import numpy as np
+from PIL import Image
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
@@ -44,6 +45,7 @@ class SDFVisualizationCallback(callbacks.Callback):
 
     def visualize_sdf(self, epoch):
         """Reference: https://github.com/znah/notebooks/blob/master/tutorials/implicit_sdf.ipynb"""
+        figure = plt.figure()
         y, x = np.mgrid[
             -self.distance : self.distance : 256j, -self.distance : self.distance : 256j
         ]
@@ -65,7 +67,18 @@ class SDFVisualizationCallback(callbacks.Callback):
         if self.save_file is not None:
             plt.savefig(self.save_file)
         if wandb.run is not None:
-            wandb.log({"Signed Distance Field on Data": plt}, step=epoch)
+            wandb.log(
+                {
+                    "Signed Distance Field on Data": wandb.Image(
+                        Image.frombytes(
+                            "RGB",
+                            figure.canvas.get_width_height(),
+                            fig.canvas.tostring_rgb(),
+                        )
+                    )
+                },
+                step=epoch,
+            )
 
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:
