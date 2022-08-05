@@ -47,7 +47,6 @@ class SDFVisualizationCallback(callbacks.Callback):
 
     def visualize_sdf(self, epoch):
         """Reference: https://github.com/znah/notebooks/blob/master/tutorials/implicit_sdf.ipynb"""
-        figure = plt.figure()
         y, x = np.mgrid[
             -self.distance : self.distance : 256j, -self.distance : self.distance : 256j
         ]
