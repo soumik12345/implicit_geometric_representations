@@ -11,6 +11,10 @@ class PointCloud2D(ABC):
         self.points = None
         self.sample_percentage = sample_percentage
 
+    @abstractmethod
+    def build(self) -> tf.Tensor:
+        pass
+
     def __len__(self):
         return len(self.points)
 
@@ -30,6 +34,7 @@ class PointCloud2D(ABC):
 
     def plot_points(self, save_file: str = None, transpose: bool = True) -> None:
         x, y = self.points.T if transpose else self.points
+        plt.clf()
         plt.plot(x, y, ".")
         plt.axis("equal")
         plt.show()
@@ -42,7 +47,7 @@ class PointCloud2DFromFont(PointCloud2D):
         super().__init__(sample_percentage)
         self.font = ImageFont.truetype(font_file, font_size)
 
-    def build(self, query: str, padding: int) -> None:
+    def build(self, query: str, padding: int) -> tf.Tensor:
         self.create_points(query, padding)
         self.preprocess_points()
         self.sample_points()
@@ -50,9 +55,11 @@ class PointCloud2DFromFont(PointCloud2D):
 
     def create_points(self, query: str, padding: int) -> None:
         w, h = self.font.getsize(query)
-        image = Image.new("L", (w + pad * 2, h + pad * 2))
+        image = Image.new("L", (w + padding * 2, h + padding * 2))
         draw = ImageDraw.Draw(image)
-        draw.text((padding, padding), query, font=font, stroke_width=1, stroke_fill=255)
+        draw.text(
+            (padding, padding), query, font=self.font, stroke_width=1, stroke_fill=255
+        )
         image = np.float32(image) / 255.0
         y, x = image.nonzero()
         self.points = np.stack([x, -y], -1).astype(np.float32)
@@ -62,7 +69,7 @@ class PointCloud2DBatman(PointCloud2D):
     def __init__(self, sample_percentage):
         super().__init__(sample_percentage)
 
-    def build(self) -> None:
+    def build(self) -> tf.Tensor:
         self.create_points()
         self.preprocess_points()
         self.sample_points()
