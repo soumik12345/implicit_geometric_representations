@@ -2,8 +2,7 @@ from typing import Callable
 
 import tensorflow as tf
 from tensorflow import keras
-import keras
-from keras import layers, initializers, activations
+from tensorflow.keras import layers, initializers, activations
 
 
 class SDFModelBase(keras.Model):
