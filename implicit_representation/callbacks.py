@@ -64,5 +64,5 @@ class SDFVisualizationCallback(callbacks.Callback):
             plt.savefig(self.save_file)
 
     def on_epoch_end(self, epoch, logs=None):
-        if (epoch + 1) % self.visualization_interval:
+        if (epoch + 1) % self.visualization_interval == 0:
             self.visualize_sdf()
