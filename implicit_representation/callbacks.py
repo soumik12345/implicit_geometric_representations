@@ -1,5 +1,5 @@
 import tensorflow as tf
-from keras import callbacks
+from tensorflow.keras import callbacks
 
 from tqdm.autonotebook import tqdm
 
