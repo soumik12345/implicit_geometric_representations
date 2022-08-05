@@ -1,10 +1,11 @@
+import os
 import wandb
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-from tensorflow.keras import callbacks
+from keras import callbacks
 
 from tqdm.autonotebook import tqdm
 
@@ -42,6 +43,7 @@ class SDFVisualizationCallback(callbacks.Callback):
         self.visualization_interval = visualization_interval
         self.distance = distance
         self.save_file = save_file
+        self.temp_file_path = "temp_plot.png"
 
     def visualize_sdf(self, epoch):
         """Reference: https://github.com/znah/notebooks/blob/master/tutorials/implicit_sdf.ipynb"""
@@ -67,19 +69,15 @@ class SDFVisualizationCallback(callbacks.Callback):
         if self.save_file is not None:
             plt.savefig(self.save_file)
         if wandb.run is not None:
+            plt.savefig(self.temp_file_path)
             wandb.log(
-                {
-                    "Signed Distance Field on Data": wandb.Image(
-                        Image.frombytes(
-                            "RGB",
-                            figure.canvas.get_width_height(),
-                            figure.canvas.tostring_rgb(),
-                        )
-                    )
-                },
+                {"Signed Distance Field on Data": wandb.Image(self.temp_file_path)},
                 step=epoch,
             )
 
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:
             self.visualize_sdf(epoch + 1)
+
+    def on_train_end(self, logs=None):
+        os.remove(self.temp_file_path)
