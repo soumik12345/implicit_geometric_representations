@@ -51,7 +51,7 @@ class SDFVisualizationCallback(callbacks.Callback):
         ]
         coordinates = np.stack([x, y], -1).astype(np.float32)
         sdf = self.model(coordinates)[..., 0]
-        f = plt.figure(figsize=(10, 8))
+        figure = plt.figure(figsize=(10, 8))
         plt.axis("equal")
         plt.grid()
         plt.contourf(x, y, sdf, 16)
