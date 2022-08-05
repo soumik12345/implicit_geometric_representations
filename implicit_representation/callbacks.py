@@ -72,7 +72,11 @@ class SDFVisualizationCallback(callbacks.Callback):
             plt.savefig(self.temp_file_path)
             wandb.log(
                 {
-                    "Signed Distance Field on Data": figure_
+                    "Signed Distance Field on Data": Image.frombytes(
+                        "RGB",
+                        figure_.canvas.get_width_height(),
+                        figure_.canvas.tostring_rgb(),
+                    )
                 },
                 step=epoch,
             )
