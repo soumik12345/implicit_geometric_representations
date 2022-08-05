@@ -1,3 +1,4 @@
+import wandb
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -63,6 +64,8 @@ class SDFVisualizationCallback(callbacks.Callback):
         plt.show()
         if self.save_file is not None:
             plt.savefig(self.save_file)
+        if wandb.run is not None:
+            wandb.log({"Signed Distance Field on Data": plt}, step=epoch)
 
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:

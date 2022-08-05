@@ -1,0 +1,7 @@
+black==22.6.0
+-e git+https://github.com/soumik12345/implicit_geometric_representations.git@791d89fde0a42cc6426ce538321171566ffb8e9f#egg=implicit_representation
+matplotlib==3.5.2
+Pillow==9.2.0
+tensorflow==2.9.1
+tqdm==4.64.0
+wandb==0.13.0
