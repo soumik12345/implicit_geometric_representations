@@ -87,7 +87,7 @@ class SDFModelBase(keras.Model):
     def train_step(self, inputs):
         with tf.GradientTape() as train_tape:
             padded_inputs = self.pad_inputs(inputs)
-            sdf, sdf_gradients = self.val_and_grad(padded_inputs)
+            sdf, sdf_gradients = self.compute_gradients(padded_inputs)
             (
                 point_loss_term,
                 padded_point_loss_term,
