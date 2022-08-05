@@ -31,4 +31,4 @@ class SDFRenderer:
             sdf = sdf_model(position)
             position += transformed_rays * (sdf - offset)
         _, gradients = sdf_model.compute_gradients(position)
-        rendering = gradients * 0.5 + 0.5
+        return gradients * 0.5 + 0.5
