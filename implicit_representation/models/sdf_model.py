@@ -13,6 +13,7 @@ class SDFModelBase(keras.Model):
         num_intermediate_layers=2,
         activation: Callable = activations.softplus,
         point_loss_coeff: float = 100.0,
+        eikonal_coefficient: float = 1.0,
         num_padding_points: int = 500,
         *args,
         **kwargs
@@ -22,6 +23,7 @@ class SDFModelBase(keras.Model):
         self.units = units
         self.num_intermediate_layers = num_intermediate_layers
         self.point_loss_coeff = point_loss_coeff
+        self.eikonal_coefficient = eikonal_coefficient
         self.num_padding_points = num_padding_points
         self.num_dimensions = 2
         self.activation = activation
@@ -90,7 +92,9 @@ class SDFModelBase(keras.Model):
                 total_point_loss,
             ) = self.compute_point_loss(sdf)
             normalized_sdf_gradients = tf.reduce_sum(tf.square(sdf_gradients), -1)
-            eikonal_loss = tf.reduce_mean(tf.square(normalized_sdf_gradients - 1.0))
+            eikonal_loss = self.eikonal_coefficient * tf.reduce_mean(
+                tf.square(normalized_sdf_gradients - 1.0)
+            )
             loss = total_point_loss + eikonal_loss
         trainable_variables = train_tape.watched_variables()
         gradients = train_tape.gradient(loss, trainable_variables)
