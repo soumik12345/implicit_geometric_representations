@@ -12,7 +12,7 @@ class ProgressBarCallback(callbacks.Callback):
         super().__init__(*args, **kwargs)
         self.epochs = epochs
         self.p_bar = None
-    
+
     def on_train_begin(self, logs=None):
         self.p_bar = tqdm(total=self.epochs)
 
@@ -41,7 +41,7 @@ class SDFVisualizationCallback(callbacks.Callback):
         self.distance = distance
         self.save_file = save_file
 
-    def visualize_sdf(self):
+    def visualize_sdf(self, epoch):
         """Reference: https://github.com/znah/notebooks/blob/master/tutorials/implicit_sdf.ipynb"""
         y, x = np.mgrid[
             -self.distance : self.distance : 256j, -self.distance : self.distance : 256j
@@ -59,10 +59,11 @@ class SDFVisualizationCallback(callbacks.Callback):
             x, y = self.inputs.numpy().T
             u, v = sdf_gradients.numpy().T
             plt.quiver(x, y, u, v, color="white")
+        plt.title(f"Signed Distance Field at Epoch: {epoch}")
         plt.show()
         if self.save_file is not None:
             plt.savefig(self.save_file)
 
     def on_epoch_end(self, epoch, logs=None):
         if (epoch + 1) % self.visualization_interval == 0:
-            self.visualize_sdf()
+            self.visualize_sdf(epoch + epoch)
