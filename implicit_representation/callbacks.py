@@ -73,7 +73,7 @@ class SDFVisualizationCallback(callbacks.Callback):
                         Image.frombytes(
                             "RGB",
                             figure.canvas.get_width_height(),
-                            fig.canvas.tostring_rgb(),
+                            figure.canvas.tostring_rgb(),
                         )
                     )
                 },
