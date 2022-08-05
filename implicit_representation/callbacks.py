@@ -64,8 +64,8 @@ class SDFVisualizationCallback(callbacks.Callback):
             u, v = sdf_gradients.numpy().T
             plt.quiver(x, y, u, v, color="white")
         plt.title(f"Signed Distance Field at Epoch: {epoch}")
+        fig_1 = plt.gcf()
         if self.save_file is not None:
-            fig_1 = plt.gcf()
             fig_1.savefig(self.save_file)
         if wandb.run is not None:
             fig_1.savefig(self.temp_file_path)
