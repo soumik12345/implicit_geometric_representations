@@ -1,1 +1,1 @@
-from .sdf_model import SDFModelBase
+from .sdf_model import SDFModelBase, SDFModelResidual
