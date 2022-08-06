@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 
 **.png
+
+wandb/
+artifacts/
+upload_data.py

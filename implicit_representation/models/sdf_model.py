@@ -10,6 +10,7 @@ class SDFModelBase(keras.Model):
         self,
         num_points: int,
         units: int = 80,
+        num_dimensions: int = 2,
         num_intermediate_layers=2,
         activation: Callable = activations.softplus,
         point_loss_coeff: float = 100.0,
@@ -25,7 +26,7 @@ class SDFModelBase(keras.Model):
         self.point_loss_coeff = point_loss_coeff
         self.eikonal_coefficient = eikonal_coefficient
         self.num_padding_points = num_padding_points
-        self.num_dimensions = 2
+        self.num_dimensions = num_dimensions
         self.activation = activation
         self._build_layers()
 
@@ -60,7 +61,6 @@ class SDFModelBase(keras.Model):
 
     def pad_inputs(self, inputs):
         inputs = inputs[0]
-        num_points = tf.shape(inputs)[0]
         padded_points = tf.concat(
             [
                 inputs,
@@ -106,3 +106,55 @@ class SDFModelBase(keras.Model):
             "total_point_loss": total_point_loss,
             "eikonal_loss": eikonal_loss,
         }
+
+
+class SDFModelResidual(SDFModelBase):
+    """Reference: https://github.com/peisuke/ImplicitGeometricRegularization.pytorch/blob/master/network.py"""
+
+    def __init__(
+        self,
+        num_points: int,
+        units: int = 512,
+        num_dimensions: int = 2,
+        num_pre_residual_layers: int = 4,
+        num_post_residual_layers: int = 3,
+        activation: Callable = activations.softplus,
+        point_loss_coeff: float = 100.0,
+        eikonal_coefficient: float = 1.0,
+        num_padding_points: int = 500,
+        *args,
+        **kwargs
+    ) -> None:
+        super().__init__(
+            num_points=num_points,
+            units=units,
+            num_dimensions=num_dimensions,
+            activation=activation,
+            point_loss_coeff=point_loss_coeff,
+            eikonal_coefficient=eikonal_coefficient,
+            num_padding_points=num_padding_points,
+            *args,
+            **kwargs
+        )
+        self.num_pre_residual_layers = num_pre_residual_layers
+        self.num_post_residual_layers = num_post_residual_layers
+
+    def _build_layers(self):
+        self.pre_residual_layers = [
+            layers.Dense(self.units, self.activation)
+            for _ in range(self.num_pre_residual_layers)
+        ]
+        self.post_residual_layers = [
+            layers.Dense(self.units, self.activation)
+            for _ in range(self.num_post_residual_layers)
+        ]
+        self.output_layer = layers.Dense(1)
+
+    def call(self, inputs):
+        x = self.pre_residual_layers[0](inputs)
+        for layer in self.pre_residual_layers[1:]:
+            x = layer(x)
+        x = tf.concat([x, inputs], axis=-1)
+        for layer in self.post_residual_layers:
+            x = layer(x)
+        return self.output_layer(x)
