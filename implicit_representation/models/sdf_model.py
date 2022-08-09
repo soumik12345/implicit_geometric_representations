@@ -4,6 +4,8 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers, initializers, activations
 
+from ..utils import random_choice
+
 
 class SDFModelBase(keras.Model):
     def __init__(
@@ -151,6 +153,7 @@ class SDFModelResidual(SDFModelBase):
         self.output_layer = layers.Dense(1)
 
     def call(self, inputs):
+        inputs = random_choice(inputs, n_samples=self.num_points)
         x = self.pre_residual_layers[0](inputs)
         for layer in self.pre_residual_layers[1:]:
             x = layer(x)
