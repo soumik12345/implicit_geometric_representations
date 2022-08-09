@@ -18,6 +18,7 @@ class SDFModelBase(keras.Model):
         point_loss_coeff: float = 100.0,
         eikonal_coefficient: float = 1.0,
         num_padding_points: int = 500,
+        build: bool = True,
         *args,
         **kwargs
     ):
@@ -30,7 +31,8 @@ class SDFModelBase(keras.Model):
         self.num_padding_points = num_padding_points
         self.num_dimensions = num_dimensions
         self.activation = activation
-        self._build_layers()
+        if build:
+            self._build_layers()
 
     def _build_layers(self):
         self.initial_layer = layers.Dense(
@@ -135,11 +137,13 @@ class SDFModelResidual(SDFModelBase):
             point_loss_coeff=point_loss_coeff,
             eikonal_coefficient=eikonal_coefficient,
             num_padding_points=num_padding_points,
+            build=False
             *args,
             **kwargs
         )
         self.num_pre_residual_layers = num_pre_residual_layers
         self.num_post_residual_layers = num_post_residual_layers
+        self._build_layers()
 
     def _build_layers(self):
         self.pre_residual_layers = [
